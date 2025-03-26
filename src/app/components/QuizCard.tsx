@@ -39,6 +39,7 @@ export default function QuizCard() {
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [showAnswer, setShowAnswer] = useState(false);
     const [totalPoints, setTotalPoints] = useState(0);
+    const [totalLives, setTotalLives] = useState(3);
 
     useEffect(() => {
         async function loadSongs() {
@@ -70,12 +71,15 @@ export default function QuizCard() {
             else {
                 setIsCorrect(false);
                 setShowAnswer(true);
+                setTotalLives(totalLives - 1);
             }
         }
     }
 
+    
+
     // Funktion för att starta om spelet
-    function startNewGame() {
+    function loadNextSong() {
         // Blanda om låtarna och välj 4 nya
         const newRandomSongs = songs.sort(() => Math.random() - 0.5).slice(0, 4);
         setSelectedSongs(newRandomSongs);
@@ -87,6 +91,8 @@ export default function QuizCard() {
         setShowAnswer(false);
     }
 
+    
+
     if (loading) {
         return <div>Laddar låtar...</div>;
     }
@@ -96,6 +102,8 @@ export default function QuizCard() {
     return (
         <div className="p-4">
             <h2 className="text-xl font-bold mb-4">Gissa låten!</h2>
+            <p className="mb-4">Points: {totalPoints}</p>
+            <p className="mb-4">Lives: {totalLives}</p>
             {playingSong && videoId && (
                 <div className="mb-4">
                     <YouTube
@@ -154,11 +162,11 @@ export default function QuizCard() {
                             Fel svar! Det var {playingSong?.title} - {playingSong?.artist} 😢
                         </div>
                     )}
-                    <button 
-                        onClick={startNewGame}
+                    <button     
+                        onClick={loadNextSong}
                         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
-                        Spela igen
+                        Nästa låt
                     </button>
                 </div>
             )}
